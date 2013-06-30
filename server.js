@@ -8,7 +8,15 @@ app.get('/info', function(req, res){
 
 app.post('/matches', function(req, res){
   console.log(req.body);
-  res.send({match: 'ok'});
+  function guid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(char) {
+      var rand = Math.random()*16|0, charReplacement = (char == 'x') ? rand : (rand&0x3|0x8);
+
+      return charReplacement.toString(16);
+    });
+  }
+
+  res.send({guid: guid()});
 });
 
 app.listen(3000);
