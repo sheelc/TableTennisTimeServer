@@ -1,3 +1,7 @@
+process.on('uncaughtException', function(err){
+  console.error(err);
+});
+
 var express = require('express');
 var app = express();
 app.use(express.bodyParser());
