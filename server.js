@@ -2,10 +2,13 @@ var express = require('express');
 var app = express();
 app.use(express.bodyParser());
 
-var redis = require("redis");
-var redisClient = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST);
-if(process.env.REDIS_PASSWORD){
-  redisClient.auth(process.env.REDIS_PASSWORD);
+var redis = require("redis"), redisClient;
+if (process.env.VCAP_SERVICES) {
+  var serviceCredentials = JSON.parse(process.env.VCAP_SERVICES)["rediscloud-n/a"][0].credentials;
+  redisClient = redis.createClient(serviceCredentials.port, serviceCredentials.hostname);
+  redisClient.auth(serviceCredentials.password);
+} else {
+  redisClient = redis.createClient();
 }
 
 app.get('/info', function(req, res){
