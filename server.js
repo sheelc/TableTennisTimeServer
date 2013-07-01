@@ -53,11 +53,11 @@ var scheduleMatch = function(matchDetails, guid){
       newMatchKey = matchDetails.matchType + ":" + neededNumberOfPlayers,
       pendingMatchKey = matchDetails.matchType + ":" + matchDetails.numPlayers;
 
-  function transactionallyScheduleMatch(tryNumber) {
-    tryNumber = tryNumber || 0;
+  function transactionallyScheduleMatch() {
+    var tryNumber = 1;
     var repeatFunction = function(err) {
-      if(err) {
-        transactionallScheduleMatch(tryNumber + 1)
+      if(err && (tryNumber++ < 3)) {
+        transactionallScheduleMatch();
       }
     };
 
