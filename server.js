@@ -38,7 +38,12 @@ app.post('/matches', function(req, res){
 app.get('/matches/:guid', function(req, res){
   console.log('polling received for: ' + req.params.guid);
   redisClient.hgetall(req.params.guid, function(err, savedMatch){
-    if(savedMatch && savedMatch.opponentNames) {
+    if(!savedMatch) {
+      res.status(404).send({});
+      return;
+    }
+
+    if(savedMatch.opponentNames) {
       res.send({opponentNames: savedMatch.opponentNames});
     } else {
       res.send({});
@@ -69,8 +74,11 @@ var scheduleMatch = function(matchDetails, guid){
     };
 
     redisClient.watch(pendingMatchKey);
-    var pendingGuid = redisClient.get(pendingMatchKey),
-        pendingOpponentNames = redisClient.hmget(pendingGuid, 'names');
+    var max = function(a, b) { return a > b ? a : b },
+        min = function(a, b) { return a < b ? a : b },
+        pendingGuid = redisClient.get(pendingMatchKey),
+        pendingOpponentNames = redisClient.hmget(pendingGuid, 'names'),
+        expirationTime = min(max(matchDetails.requestTTL, 1), 9*60) * 60;
 
     redisClient.get(pendingMatchKey, function(err, pendingGuid){
       redisClient.hmget(pendingGuid, 'names', function(err, pendingOpponentNames){
@@ -83,6 +91,8 @@ var scheduleMatch = function(matchDetails, guid){
         } else {
           redisClient.multi()
           .set(newMatchKey, guid)
+          .expire(newMatchKey, expirationTime)
+          .expire(guid, expirationTime)
           .exec(repeatFunction);
         }
       });
