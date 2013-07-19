@@ -78,7 +78,7 @@ var scheduleMatch = function(matchDetails, guid){
         min = function(a, b) { return a < b ? a : b },
         pendingGuid = redisClient.get(pendingMatchKey),
         pendingOpponentNames = redisClient.hmget(pendingGuid, 'names'),
-        expirationTime = min(max(matchDetails.requestTTL, 1), 9*60) * 60;
+        expirationTime = min(max(matchDetails.requestTTL || 9*60, 1), 9*60) * 60;
 
     redisClient.get(pendingMatchKey, function(err, pendingGuid){
       redisClient.hmget(pendingGuid, 'names', function(err, pendingOpponentNames){
