@@ -86,6 +86,8 @@ var scheduleMatch = function(matchDetails, guid){
           redisClient.multi()
           .del(pendingMatchKey)
           .hset(pendingGuid, 'opponentNames', matchDetails.names)
+          .expire(pendingGuid, 60 * 60)
+          .expire(guid, 60 * 60)
           .hset(guid, 'opponentNames', pendingOpponentNames)
           .exec(repeatFunction);
         } else {
