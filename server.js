@@ -2,16 +2,22 @@ process.on('uncaughtException', function(err){
   console.error(err);
 });
 
-var express = require('express');
+var fs = require('fs'),
+    path = require('path'),
+    express = require('express');
+
 var app = express();
 app.use(express.bodyParser());
+
+app.get('/', function(req, res) {
+  res.sendfile('public/index.html');
+});
+
+app.use('/public', express.static(__dirname + '/public'));
 
 app.get('/info', function(req, res){
   res.send({version: 1});
 });
-
-var fs = require('fs'),
-    path = require('path');
 
 var routeDir = 'routes',
     files = fs.readdirSync(routeDir);

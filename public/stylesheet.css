@@ -1,0 +1,40 @@
+* {
+	font-family: "britannic bold";
+}
+
+.main-content {
+	position: relative;
+	margin: 0 auto;
+	width: 750px;
+}
+.main-title {
+	font-size: 100px;
+	text-align: center;
+	margin-top: 240px;
+}
+
+.paddle-icon {
+	height: 200px;
+	width: 200px;
+	position: absolute;
+	top: -140px;
+	left: -60px;
+}
+
+.download {
+	height: 80px;
+	width: 300px;
+	background-color: #b01030;
+	border-radius: 10px;
+	margin-top: 50px;
+	display: block;
+	text-decoration: none;
+	margin: 0 auto;
+}
+
+.download-text {
+	color: #f7ca7d;
+	font-size: 36px;
+	text-align: center;
+	line-height: 80px;
+}
