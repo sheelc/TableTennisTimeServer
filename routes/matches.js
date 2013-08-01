@@ -34,9 +34,9 @@ exports.init = function init(app) {
       }
 
       if(savedMatch.opponentNames) {
-        res.send({opponentNames: savedMatch.opponentNames});
+        res.send({opponentNames: savedMatch.opponentNames, assignedTable: "5th floor tables"});
       } else {
-        res.send({});
+        res.status(304).send({});
       }
     });
   });
