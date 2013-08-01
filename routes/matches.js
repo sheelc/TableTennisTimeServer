@@ -1,4 +1,4 @@
-exports.init = function init(app) {
+exports.init = function init(app, options) {
 
   var redis = require("redis"), redisClient;
   if (process.env.VCAP_SERVICES) {
@@ -8,6 +8,9 @@ exports.init = function init(app) {
   } else {
     redisClient = redis.createClient();
   }
+
+  var tableAreas = options.tableAreas,
+      probabilisticTableBuckets = makeProbabilisticBuckets(tableAreas);
 
   app.post('/matches', function(req, res){
     console.log(req.body);
@@ -34,7 +37,7 @@ exports.init = function init(app) {
       }
 
       if(savedMatch.opponentNames) {
-        res.send({opponentNames: savedMatch.opponentNames, assignedTable: "5th floor tables"});
+        res.send({opponentNames: savedMatch.opponentNames, assignedTable: savedMatch.tableName});
       } else {
         res.status(304).send({});
       }
@@ -73,12 +76,15 @@ exports.init = function init(app) {
       redisClient.get(pendingMatchKey, function(err, pendingGuid){
         redisClient.hmget(pendingGuid, 'names', function(err, pendingOpponentNames){
           if(pendingGuid) {
+            var selectedTableName = pickMatchTable();
             redisClient.multi()
             .del(pendingMatchKey)
             .hset(pendingGuid, 'opponentNames', matchDetails.names)
+            .hset(guid, 'opponentNames', pendingOpponentNames)
+            .hset(pendingGuid, 'tableName', selectedTableName)
+            .hset(guid, 'tableName', selectedTableName)
             .expire(pendingGuid, 60 * 60)
             .expire(guid, 60 * 60)
-            .hset(guid, 'opponentNames', pendingOpponentNames)
             .exec(repeatFunction);
           } else {
             redisClient.multi()
@@ -92,6 +98,35 @@ exports.init = function init(app) {
     }
 
     transactionallyScheduleMatch();
+  };
+
+  function makeProbabilisticBuckets(tableAreas) {
+    var totalNumberOfTables = 0;
+    for(var i = 0; i < tableAreas.length; i++) {
+      totalNumberOfTables += tableAreas[i].numberOfTables;
+    }
+
+    var currentProb = 0, buckets = [];
+    for(var i = 0; i < tableAreas.length; i++) {
+      var range = tableAreas[i].numberOfTables/totalNumberOfTables;
+      buckets.push({probMax: currentProb + range, name: tableAreas[i].name});
+    }
+
+    return buckets;
+  };
+
+  function pickMatchTable() {
+    var prob = Math.random();
+
+    var runningProb = 0;
+    for(var i = 0; i < tableAreas.length; i++) {
+      runningProb += probabilisticTableBuckets[i].probMax;
+      if(prob < runningProb) {
+        return probabilisticTableBuckets[i].name;
+      }
+    }
+
+    return probabilisticTableBuckets[0].name;
   };
 }
 

@@ -1,0 +1,8 @@
+{
+  "tableAreas": [
+    { "name": "west side tables",
+      "numberOfTables": 4 },
+    { "name": "south side tables",
+      "numberOfTables": 2 }
+  ]
+}
