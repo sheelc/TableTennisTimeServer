@@ -4,3 +4,7 @@ This is the server component to [TableTennisTime](https://github.com/sheelc/Tabl
 
 ####Start server with:####
 `node server.js`
+
+####Server configuration:####
+A config.json file is required in the same directory as `server.js`. Please refer to config.json.sample for the structure of this
+configuration file.
