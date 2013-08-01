@@ -1,5 +1,5 @@
 process.on('uncaughtException', function(err){
-  console.error(err);
+  console.error(err.stack);
 });
 
 var fs = require('fs'),
