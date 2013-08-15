@@ -16,7 +16,7 @@ app.get('/', function(req, res) {
 app.use('/public', express.static(__dirname + '/public'));
 
 app.get('/info', function(req, res){
-  res.send({version: 1});
+  res.send({version: 2});
 });
 
 var routeDir = 'routes',
