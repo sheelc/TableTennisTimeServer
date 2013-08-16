@@ -1,39 +1,6 @@
 var redisClient = require("./redis_client"),
-    fs = require('fs'),
     createGuid = require("./create_guid"),
-    stringOptions = fs.readFileSync("config.json", {encoding: 'utf8'}),
-    options = JSON.parse(stringOptions),
-    tableAreas = options.tableAreas,
-    probabilisticTableBuckets = makeProbabilisticBuckets(options.tableAreas);
-
-function makeProbabilisticBuckets(tableAreas) {
-  var totalNumberOfTables = 0;
-  for(var i = 0; i < tableAreas.length; i++) {
-    totalNumberOfTables += tableAreas[i].numberOfTables;
-  }
-
-  var currentProb = 0, buckets = [];
-  for(var i = 0; i < tableAreas.length; i++) {
-    var range = tableAreas[i].numberOfTables/totalNumberOfTables;
-    buckets.push({probMax: currentProb + range, name: tableAreas[i].name});
-  }
-
-  return buckets;
-};
-
-function pickMatchTable() {
-  var prob = Math.random();
-
-  var runningProb = 0;
-  for(var i = 0; i < tableAreas.length; i++) {
-    runningProb += probabilisticTableBuckets[i].probMax;
-    if(prob < runningProb) {
-      return probabilisticTableBuckets[i].name;
-    }
-  }
-
-  return probabilisticTableBuckets[0].name;
-};
+    tables = require("./tables");
 
 function MatchRequest(guid, data) {
   var self = this;
@@ -67,7 +34,7 @@ function MatchRequest(guid, data) {
         redisClient.hmget(pendingGuid, 'names', function(err, pendingOpponentNames){
           if(pendingGuid) {
             var matchGuid = createGuid(),
-            selectedTableName = pickMatchTable();
+            selectedTableName = tables.pickMatchTable();
 
             redisClient.multi()
             .del(pendingMatchKey)
