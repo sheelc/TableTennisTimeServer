@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+   <channel>
+      <title>TableTennisTime Changelog</title>
+      <link>http://tabletennistime.cfapps.io/updatecast.xml</link>
+      <description>Most recent changes for TableTennisTime</description>
+      <language>en</language>      
+         <item>
+            <title>Version 1.0.3 (initial Sparkle release)</title>
+            <pubDate>Sun Aug 18 17:18:16 PDT 2013</pubDate>
+            <enclosure url="http://tabletennistime.cfapps.io/public/TableTennisTime.app.zip" sparkle:version="1.0.3" length="1154530" type="application/octet-stream" />
+         </item>
+   </channel>
+</rss>
