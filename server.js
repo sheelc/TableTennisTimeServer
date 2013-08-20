@@ -3,10 +3,12 @@ process.on('uncaughtException', function(err){
 });
 
 var fs = require('fs'),
-    path = require('path'),
-    express = require('express');
+    express = require('express'),
+    ipFiltering = require("./middleware/ip_filtering"),
+    options = JSON.parse(fs.readFileSync("config.json", {encoding: 'utf8'}));
 
 var app = express();
+app.use(ipFiltering.filterIps(options.whitelistedIps));
 app.use(express.bodyParser());
 
 app.get('/', function(req, res) {
@@ -19,15 +21,15 @@ app.get('/info', function(req, res){
   res.send({version: 2});
 });
 
-var routeDir = 'routes',
-    files = fs.readdirSync(routeDir),
-    stringOptions = fs.readFileSync("config.json", {encoding: 'utf8'}),
-    options = JSON.parse(stringOptions);
+var path = require('path'),
+    routeDir = "routes",
+    routeFiles = fs.readdirSync(routeDir);
 
-files.forEach(function(file) {
+routeFiles.forEach(function(file) {
   var filePath = path.resolve('./', routeDir, file),
       route = require(filePath);
-      route.init(app, options);
+
+  route.init(app);
 });
 
 var port = process.env.PORT || 3000;

@@ -1,4 +1,4 @@
-exports.init = function init(app, options) {
+exports.init = function init(app) {
 
   var Match = require("../models/match");
 

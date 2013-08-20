@@ -1,4 +1,4 @@
-exports.init = function init(app, options) {
+exports.init = function init(app) {
 
   var MatchRequest = require("../models/match_request"),
       createGuid = require("../models/create_guid");
