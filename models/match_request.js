@@ -45,9 +45,9 @@ function MatchRequest(guid, data) {
             .hset(pendingGuid, 'confirmed', 0)
             .hset(guid, 'confirmed', 0)
             .hmset(matchGuid, {team1: pendingGuid, team2: guid, tableName: selectedTableName})
-            .expire(matchGuid, 80)
-            .expire(pendingGuid, 80)
-            .expire(guid, 80)
+            .expire(matchGuid, 40)
+            .expire(pendingGuid, 40)
+            .expire(guid, 40)
             .exec(repeatFunction);
           } else {
             redisClient.multi()
