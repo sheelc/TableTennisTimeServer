@@ -13,7 +13,6 @@ exports.init = function init(app) {
   });
 
   app.get('/match_requests/:guid', function(req, res){
-    console.log('polling received for: ' + req.params.guid);
     MatchRequest.withGuid(req.params.guid, function(match) {
       if(!match) {
         res.status(404).send({});

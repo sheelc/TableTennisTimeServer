@@ -36,6 +36,8 @@ function MatchRequest(guid, data) {
             var matchGuid = createGuid(),
             selectedTableName = tables.pickMatchTable();
 
+            console.log("scheduled match with: " + pendingOpponentNames);
+
             redisClient.multi()
             .del(pendingMatchKey)
             .hset(pendingGuid, 'scheduledMatchGuid', matchGuid)
