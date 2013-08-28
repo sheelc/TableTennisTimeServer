@@ -1,10 +1,11 @@
 exports.init = function init(app) {
 
   var MatchRequest = require("../models/match_request"),
-      createGuid = require("../models/create_guid");
+      createGuid = require("../models/create_guid"),
+      logger = require("../models/logger");
 
   app.post('/match_requests', function(req, res){
-    console.log(req.body);
+    logger.log(req.body);
     var requestGuid = createGuid(),
         matchRequest = new MatchRequest(requestGuid, req.body);
 

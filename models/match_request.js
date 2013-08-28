@@ -1,6 +1,7 @@
 var redisClient = require("./redis_client"),
     createGuid = require("./create_guid"),
-    tables = require("./tables");
+    tables = require("./tables"),
+    logger = require("./logger");
 
 function MatchRequest(guid, data) {
   var self = this;
@@ -12,8 +13,8 @@ function MatchRequest(guid, data) {
     };
 
     var neededNumberOfPlayers = matchTypes[data.matchType].maxNumOfPlayers - data.numPlayers,
-    newMatchKey = data.matchType + ":" + neededNumberOfPlayers,
-    pendingMatchKey = data.matchType + ":" + data.numPlayers;
+        newMatchKey = data.matchType + ":" + neededNumberOfPlayers,
+        pendingMatchKey = data.matchType + ":" + data.numPlayers;
 
     function transactionallyScheduleMatch() {
       var tryNumber = 1;
@@ -25,18 +26,16 @@ function MatchRequest(guid, data) {
 
       redisClient.watch(pendingMatchKey);
       var max = function(a, b) { return a > b ? a : b },
-      min = function(a, b) { return a < b ? a : b },
-      pendingGuid = redisClient.get(pendingMatchKey),
-      pendingOpponentNames = redisClient.hmget(pendingGuid, 'names'),
-      expirationTime = min(max(data.requestTTL || 9*60, 1), 9*60) * 60;
+          min = function(a, b) { return a < b ? a : b },
+          expirationTime = min(max(data.requestTTL || 9*60, 1), 9*60) * 60;
 
       redisClient.get(pendingMatchKey, function(err, pendingGuid){
         redisClient.hmget(pendingGuid, 'names', function(err, pendingOpponentNames){
           if(pendingGuid) {
             var matchGuid = createGuid(),
-            selectedTableName = tables.pickMatchTable();
+                selectedTableName = tables.pickMatchTable();
 
-            console.log("scheduled match with: " + pendingOpponentNames);
+            logger.log("scheduled match with: " + pendingOpponentNames + " and " + data.names);
 
             redisClient.multi()
             .del(pendingMatchKey)
