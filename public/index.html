@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html ng-app='tableTennisTime'>
 <head>
 	<link rel="stylesheet" type="text/css" href="/public/stylesheet.css">
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
 	<title>TableTennisTime</title>
 </head>
 
@@ -10,12 +11,104 @@
 		<img class="paddle-icon" src="/public/images/icon.png">
 		<h1 class="main-title">TableTennisTime</h1>
 	</div>
-	
+
 	<a class="download" href="/public/TableTennisTime.app.zip">
 		<div class="download-text">
 			Download now
 		</div>
 	</a>
+
+	<div ng-controller="Controller">
+		<form class="simple-form">
+			<label>Names:
+				<input type='text' ng-model="game.names"/>
+			</label>
+			<br/>
+			<label>Num. of Players:
+				<label><input type='radio' value=1 ng-model="game.numPlayers"/> 1 Player </label>
+				<label><input type='radio' value=2 ng-model="game.numPlayers"/> 2 Players </label>
+				<label><input type='radio' value=3 ng-model="game.numPlayers"/> 3 Players </label>
+			</label>
+			<br/>
+			<label>Match Type:
+				<label><input type='radio' value='singles' ng-model="game.matchType"/> Singles </label>
+				<label><input type='radio' value='doubles' ng-model="game.matchType"/> Doubles </label>
+			</label>
+			<br/>
+			<button ng-click="submit(game)">Request Match</button>
+		</form>
+		<div>
+			{{status}}
+		</div>
+		<div ng-show="match">
+			Match Found: {{match.teams[0].names + " vs. " + match.teams[1].names}}
+		</div>
+		<button ng-show="match" ng-click="acceptMatch()">Accept Match</button>
+		<button ng-show="match" ng-click="rejectMatch()">Reject Match</button>
+		<div ng-show="match.scheduled===1">
+			Match Accepted!
+		</div>
+		<div ng-show="match.scheduled===-1">
+			Match Rejected!
+		</div>
+	</div>
+	<script>
+		var tableTennisTime = angular.module('tableTennisTime',[]);
+
+
+		tableTennisTime.controller('Controller', function ($scope, $http, $timeout){
+			$scope.game = {numPlayers: 1, matchType: 'singles'};
+			$scope.status = null;
+			$scope.request_guid = null;
+			$scope.scheduled_guid = null;
+			$scope.match = null;
+
+			$scope.submit = function(game){
+				console.log(game);
+				$http.post('/match_requests', game).success(function(response){
+					$scope.request_guid = response['guid'];
+					$scope.status = 'Searching...';
+					$scope.update();
+				});
+			};
+
+			$scope.update = function(){
+				$http.get('/match_requests/'+ $scope.request_guid).success(function(response){
+					$scope.scheduled_guid = response['scheduledMatchGuid'];
+					$scope.getMatchInfo();
+				}).error(function(e){
+					if(!e){
+						$timeout($scope.update,1000);
+					}
+				});
+			};
+
+			$scope.getMatchInfo = function(){
+				$http.get('/matches/' + $scope.scheduled_guid).success(function(response){
+					$scope.status = 'Match Found!'
+					$scope.match = response;
+					console.log(response)
+					$timeout($scope.getMatchInfo, 1000);
+				});
+			};
+
+			$scope.acceptMatch = function(){
+				$scope.match
+				$http.put('/matches/' + $scope.scheduled_guid,{
+					matchRequestGuid: $scope.request_guid,
+					accepted: 1
+				})
+			};
+
+			$scope.rejectMatch = function(){
+				$scope.match
+				$http.put('/matches/' + $scope.scheduled_guid,{
+					matchRequestGuid: $scope.request_guid,
+					accepted: 0
+				})
+			}
+		});
+	</script>
 </body>
 
 </html>
