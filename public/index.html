@@ -38,14 +38,17 @@
 			<br/>
 			<button ng-click="submit(game)">Request Match</button>
 		</form>
-		<div>
-			{{status}}
+		<div ng-show="status">
+			Status: {{status}}
 		</div>
 		<div ng-show="match">
 			Match Found: {{match.teams[0].names + " vs. " + match.teams[1].names}}
 		</div>
-		<button ng-show="match" ng-click="acceptMatch(scheduled_guid, request_guid)">Accept Match</button>
-		<button ng-show="match" ng-click="rejectMatch(scheduled_guid, request_guid)">Reject Match</button>
+		<button ng-show="match" ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 1)">Accept Match</button>
+		<button ng-show="match" ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 0)">Reject Match</button>
+		<div ng-show="match.timeRemaining && !match.scheduled">
+			Time Left: {{match.timeRemaining}}
+		</div>
 		<div ng-show="match.scheduled===1">
 			Match Accepted!
 		</div>

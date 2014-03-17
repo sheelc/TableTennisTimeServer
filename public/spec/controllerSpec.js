@@ -85,9 +85,11 @@ describe('Controller', function(){
   });
 
   describe('updating the status of a scheduled match', function(){
+    var response;
     beforeEach(function(){
       spyOn($scope, 'getMatchInfo').and.callThrough();
-      httpBackend.expectGET('/matches/456').respond({foo: 'bar'});
+      response = {foo: 'bar', timeRemaining: 40, scheduled: 0};
+      httpBackend.expectGET('/matches/456').respond(response);
       $scope.getMatchInfo('456');
       httpBackend.flush();
     });
@@ -97,26 +99,70 @@ describe('Controller', function(){
     });
 
     it('saves the match information', function(){
-      expect($scope.match).toEqual({foo: 'bar'});
+      expect($scope.match).toEqual(response);
     });
 
     it('updates the status every second', function(){
       expect($scope.getMatchInfo.calls.count()).toEqual(1);
-      httpBackend.expectGET('/matches/456').respond({foo: 'bar'});
+      httpBackend.expectGET('/matches/456').respond(response);
       timeout.flush(1000);
       expect($scope.getMatchInfo.calls.count()).toEqual(2);
       httpBackend.flush();
     });
 
-    //stop updating at timeout or accept
-    //countdown
+    it('stops updating if the match is scheduled', function(){
+      response.scheduled = 1;
+      httpBackend.expectGET('/matches/456').respond(response);
+      timeout.flush(1000);
+      expect($scope.getMatchInfo.calls.count()).toEqual(2);
+      httpBackend.flush();
+
+      timeout.flush(1000);
+      expect($scope.getMatchInfo.calls.count()).toEqual(2);
+      expect($scope.match).not.toBeNull();
+      expect($scope.status).not.toEqual('Match Failed!');
+    });
+
+    it('stops updating if the match times out', function(){
+      response.timeRemaining = 0;
+      httpBackend.expectGET('/matches/456').respond(response);
+      timeout.flush(1000);
+      expect($scope.getMatchInfo.calls.count()).toEqual(2);
+      httpBackend.flush();
+
+      timeout.flush(1000);
+      expect($scope.getMatchInfo.calls.count()).toEqual(2);
+      expect($scope.match).toBeNull();
+      expect($scope.status).toEqual('Match Failed!');
+    });
+
+    describe('when there is an error', function(){
+      it('removes the match if there is no scheduled match', function(){
+        httpBackend.expectGET('/matches/456').respond(404);
+        timeout.flush(1000);
+        httpBackend.flush();
+
+        expect($scope.match).toBeNull();
+        expect($scope.status).toEqual('Match Failed!');
+      });
+
+      it('does not remove the match if there is a scheduled match', function(){
+        $scope.match = {scheduled: 1};
+        httpBackend.expectGET('/matches/456').respond(404);
+        timeout.flush(1000);
+        httpBackend.flush();
+
+        expect($scope.match).not.toBeNull();
+        expect($scope.status).not.toEqual('Match Failed!');
+      });
+    });
   });
 
   describe('accepting a scheduled match', function(){
     it('notifies the server that you accepted the match', function(){
       httpBackend.expectPUT('/matches/456', { matchRequestGuid: '123', accepted: 1 })
         .respond(200, {});
-      $scope.acceptMatch('456', '123');
+      $scope.acceptOrRejectMatch('456', '123', 1);
       httpBackend.flush();
     });
   });
@@ -125,7 +171,7 @@ describe('Controller', function(){
     it('notifies the server that you rejected the match', function(){
       httpBackend.expectPUT('/matches/456', { matchRequestGuid: '123', accepted: 0 })
         .respond(200, {});
-      $scope.rejectMatch('456', '123');
+      $scope.acceptOrRejectMatch('456', '123', 0);
       httpBackend.flush();
     });
   });

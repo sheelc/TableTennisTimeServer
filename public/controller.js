@@ -19,26 +19,31 @@ angular.module('tableTennisTime',[])
     });
   };
 
+  var failMatch = function(){
+    $scope.match = null;
+    $scope.status = 'Match Failed!'
+  };
+
   $scope.getMatchInfo = function(scheduledGuid){
     $http.get('/matches/' + scheduledGuid).success(function(response){
       $scope.status = 'Match Found!'
       $scope.match = response;
-      $timeout(function(){$scope.getMatchInfo(scheduledGuid)}, 1000);
+      if(response.timeRemaining > 0 && response.scheduled === 0){
+        $timeout(function(){$scope.getMatchInfo(scheduledGuid)}, 1000);
+      } else if(response.timeRemaining < 1 && response.scheduled === 0) {
+        failMatch();
+      }
+    }).error(function(e){
+      if($scope.match && !$scope.match.scheduled){
+        failMatch();
+      }
     });
   };
-  
-  $scope.acceptMatch = function(scheduledGuid, requestGuid){
-    $http.put('/matches/' + scheduledGuid, {
-      matchRequestGuid: requestGuid,
-      accepted: 1
-    })
-  };
 
-  $scope.rejectMatch = function(scheduledGuid, requestGuid){
-    $scope.match
+  $scope.acceptOrRejectMatch = function(scheduledGuid, requestGuid, wasAccepted){
     $http.put('/matches/' + scheduledGuid, {
       matchRequestGuid: requestGuid,
-      accepted: 0
-    })
-  }
+      accepted: wasAccepted
+    });
+  };
 });
