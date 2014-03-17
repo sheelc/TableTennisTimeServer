@@ -7,5 +7,6 @@
     "express": "3.2.4",
     "redis": "0.8.4",
     "ip": "0.1.0"
-  }
+  },
+  "devDependencies": "karma"
 }
