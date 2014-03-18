@@ -1,5 +1,9 @@
-* {
-	font-family: "britannic bold";
+body {
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light","Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+h1 {
+	font-weight: normal;
 }
 
 .main-content {
@@ -37,4 +41,52 @@
 	font-size: 36px;
 	text-align: center;
 	line-height: 80px;
+}
+
+/*====================================
+*
+* Web interface styles
+*
+====================================*/
+
+.web-interface {
+	width: 500px;
+	margin: auto;
+	margin-top: 100px;
+}
+
+.button {
+	background-color: white;
+	border: 1px solid black;
+	padding: 10px 15px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color .3s ease-in-out;
+}
+
+.button:hover {
+	background-color: AliceBlue;
+}
+
+.text-input {
+	border: 1px solid black;
+	padding: 10px 15px;
+	font-size: 14px;
+}
+
+.row {
+	display: block;
+	margin: 10px 0;
+}
+
+.row span {
+	vertical-align: middle;
+}
+
+.input-inline {
+	margin: 0 5px;
+}
+
+.input-inline input {
+	vertical-align: middle;
 }

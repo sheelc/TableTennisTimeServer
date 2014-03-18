@@ -19,40 +19,39 @@
 		</div>
 	</a>
 
-	<div ng-controller="Controller">
+	<div ng-controller="Controller" class="red web-interface">
 		<form class="simple-form">
-			<label>Names:
-				<input type='text' ng-model="game.names"/>
+			<label class="row">Name(s):
+				<input class="text-input" type='text' ng-model="game.names"/>
 			</label>
-			<br/>
-			<label>Num. of Players:
-				<label><input type='radio' value=1 ng-model="game.numPlayers"/> 1 Player </label>
-				<label><input type='radio' value=2 ng-model="game.numPlayers"/> 2 Players </label>
-				<label><input type='radio' value=3 ng-model="game.numPlayers"/> 3 Players </label>
+			<label class="row"><span>Num. of Players:</span>
+				<label class="input-inline"><input type='radio' value=1 ng-model="game.numPlayers"/><span>1 Player</span></label>
+				<label class="input-inline"><input type='radio' value=2 ng-model="game.numPlayers"/><span>2 Players</span></label>
+				<label class="input-inline"><input type='radio' value=3 ng-model="game.numPlayers"/><span>3 Players</span></label>
 			</label>
-			<br/>
-			<label>Match Type:
-				<label><input type='radio' value='singles' ng-model="game.matchType"/> Singles </label>
-				<label><input type='radio' value='doubles' ng-model="game.matchType"/> Doubles </label>
+			<label class="row">Match Type:
+				<label class="input-inline"><input type='radio' value='singles' ng-model="game.matchType"/><span>Singles</span></label>
+				<label class="input-inline"><input type='radio' value='doubles' ng-model="game.matchType"/><span>Doubles</span></label>
 			</label>
-			<br/>
-			<button ng-click="submit(game)">Request Match</button>
+			<button class="button row" ng-click="submit(game)">Request Match</button>
 		</form>
-		<div ng-show="status">
+		<div class="row" ng-show="status">
 			Status: {{status}}
 		</div>
-		<div ng-show="match">
+		<div class="row" ng-show="match">
 			Match Found: {{match.teams[0].names + " vs. " + match.teams[1].names}}
 		</div>
-		<button ng-show="match" ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 1)">Accept Match</button>
-		<button ng-show="match" ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 0)">Reject Match</button>
-		<div ng-show="match.timeRemaining && !match.scheduled">
+		<button ng-show="match" class="button"
+			ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 1)">Accept Match</button>
+		<button ng-show="match" class="button"
+			ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 0)">Reject Match</button>
+		<div class="row" ng-show="match.timeRemaining && !match.scheduled">
 			Time Left: {{match.timeRemaining}}
 		</div>
-		<div ng-show="match.scheduled===1">
+		<div class="row" ng-show="match.scheduled===1">
 			Match Accepted!
 		</div>
-		<div ng-show="match.scheduled===-1">
+		<div class="row" ng-show="match.scheduled===-1">
 			Match Rejected!
 		</div>
 	</div>
