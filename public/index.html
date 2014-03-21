@@ -12,12 +12,13 @@
 	<div class="header">
 		<span class="title">TableTennisTime</span>
         <img class="paddle-icon" src="/public/images/icon.png">
-        <a class="download" href="/public/TableTennisTime.app.zip">
-            Download now
+        <a class="download button" href="/public/TableTennisTime.app.zip">
+            Download OSX App
         </a>
     </div>
 
 	<div ng-controller="Controller" class="red web-interface">
+        <div class="web-title">Find a Match!</div>
 		<form class="simple-form" ng-show="status <= 0">
 			<label class="row">Name(s):
 				<input class="text-input" type='text' ng-model="game.names"/>
@@ -56,7 +57,10 @@
 		</div>
 		<div ng-switch="match.scheduled" class="row">
             <span ng-switch-when="1" class="accepted"> Match Accepted! Go Play!</span>
-            <span ng-switch-when="-1" class="rejected"> Match Rejected! </span>
+            <span ng-switch-when="-1" class="rejected">
+                Match Rejected!
+                <a class="button" href="/"> Try Again </a>
+            </span>
 		</div>
 	</div>
 </body>
