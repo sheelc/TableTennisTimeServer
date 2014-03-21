@@ -8,5 +8,9 @@
     "redis": "0.8.4",
     "ip": "0.1.0"
   },
-  "devDependencies": "karma"
+  "devDependencies": {
+    "karma": ">= 0.12.1",
+    "karma-jasmine": ">= 0.2.2",
+    "karma-chrome-launcher": ">= 0.1.2"
+  }
 }
