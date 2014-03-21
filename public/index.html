@@ -42,21 +42,26 @@
                     </div>
                 </div>
             </div>
-			<span ng-switch-when="2"> Match Found! </span>
-			<span ng-switch-when="-1"> Match Failed </span>
+			<span class='rejected' ng-switch-when="-1"> Match Failed </span>
 		</div>
 		<div class="row" ng-show="match">
-			Match Found: {{match.teams[0].names + " vs. " + match.teams[1].names}}
+			Match Found: <em>{{match.teams[0].names + " vs. " + match.teams[1].names}}</em>
 		</div>
-		<button ng-show="match" class="button" ng-class="{accepted: accepted === 1}" ng-disabled="acceptedOrRejected"
-			ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 1)">Accept Match</button>
-		<button ng-show="match" class="button" ng-class="{rejected: accepted === -1}" ng-disabled="acceptedOrRejected"
-			ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 0)">Reject Match</button>
-		<div class="row" ng-show="match.timeRemaining && !match.scheduled">
-			Time Left: {{match.timeRemaining}}
-		</div>
+        <div ng-show="!match.scheduled">
+            <button ng-show="match" class="button" ng-class="{accepted: accepted === 1}" ng-disabled="acceptedOrRejected"
+                    ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 1)">Accept Match</button>
+            <button ng-show="match" class="button" ng-class="{rejected: accepted === -1}" ng-disabled="acceptedOrRejected"
+                    ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 0)">Reject Match</button>
+            <div class="row" ng-show="match.timeRemaining && !match.scheduled">
+                Time Left: {{match.timeRemaining}}
+            </div>
+        </div>
 		<div ng-switch="match.scheduled" class="row">
-            <span ng-switch-when="1" class="accepted"> Match Accepted! Go Play!</span>
+            <span ng-switch-when="1">
+                <span class="accepted"> Match Accepted! Go Play! </span>
+                <br/>
+                Assigned Table: <em>{{match.assignedTable}}</em>
+            </span>
             <span ng-switch-when="-1" class="rejected">
                 Match Rejected!
                 <a class="button" href="/"> Try Again </a>
