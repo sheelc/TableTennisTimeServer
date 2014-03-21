@@ -2,45 +2,28 @@ body {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light","Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
-h1 {
-	font-weight: normal;
+.header > * {
+    vertical-align: middle;
 }
 
-.main-content {
-	position: relative;
-	margin: 0 auto;
-	width: 750px;
-}
-.main-title {
-	font-size: 100px;
-	text-align: center;
-	margin-top: 240px;
+.title {
+    font-family: 'Lobster Two', cursive;
+    font-size: 30px;
 }
 
 .paddle-icon {
-	height: 200px;
-	width: 200px;
-	position: absolute;
-	top: -140px;
-	left: -60px;
+	height: 35px;
 }
 
 .download {
-	height: 80px;
-	width: 300px;
+	height: 30px;
 	background-color: #b01030;
-	border-radius: 10px;
-	margin-top: 50px;
-	display: block;
 	text-decoration: none;
-	margin: 0 auto;
-}
-
-.download-text {
-	color: #f7ca7d;
-	font-size: 36px;
-	text-align: center;
-	line-height: 80px;
+    margin-left: 30px;
+    padding: 5px 3px;
+    text-align: center;
+    color: #f7ca7d;
+    font-size: 16px;
 }
 
 /*====================================
@@ -50,7 +33,6 @@ h1 {
 ====================================*/
 
 .web-interface {
-	width: 500px;
 	margin: auto;
 	margin-top: 100px;
 }
@@ -73,6 +55,31 @@ h1 {
 	padding: 10px 15px;
 	font-size: 14px;
 }
+
+.the-internet {
+    background: url('/public/images/the_internet.gif');
+    background-size: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.search-wrapper {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.searching {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    -webkit-animation:spin 4s linear infinite;
+}
+
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(-360deg); } }
 
 .row {
 	display: block;
