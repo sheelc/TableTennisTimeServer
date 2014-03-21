@@ -6,7 +6,7 @@ describe('Controller', function(){
 
   beforeEach(module('tableTennisTime'));
 
-  beforeEach(inject(function($controller, $rootScope, $httpBackend, $timeout) {
+  beforeEach(inject(function($controller, $rootScope, $httpBackend, $timeout){
     $scope = $rootScope.$new();
     timeout = $timeout;
     httpBackend = $httpBackend;
@@ -15,7 +15,7 @@ describe('Controller', function(){
     });
   }));
 
-  afterEach(function() {
+  afterEach(function(){
     httpBackend.verifyNoOutstandingExpectation();
     httpBackend.verifyNoOutstandingRequest();
   });
@@ -29,8 +29,13 @@ describe('Controller', function(){
     beforeEach(function(){
       spyOn($scope, 'update');
       httpBackend.expectPOST('/match_requests', $scope.game).respond(200, {guid: '123'});
+      spyOn(Notification, "requestPermission");
       $scope.submit($scope.game);
       httpBackend.flush();
+    });
+
+    it('should request notification permission from the user', function(){
+      expect(Notification.requestPermission).toHaveBeenCalled();
     });
 
     it('saves the request guid', function(){
@@ -47,7 +52,7 @@ describe('Controller', function(){
   });
 
   describe('updating the status of a game request', function(){
-    beforeEach(function() {
+    beforeEach(function(){
       spyOn($scope, 'update').and.callThrough();
     });
 
@@ -70,7 +75,7 @@ describe('Controller', function(){
     describe('when the match is ready', function(){
       beforeEach(function(){
         spyOn($scope, 'getMatchInfo');
-        httpBackend.expectGET('/match_requests/123').respond(200, { scheduledMatchGuid: '456'} );
+        httpBackend.expectGET('/match_requests/123').respond(200, { scheduledMatchGuid: '456'});
         $scope.update('123');
         httpBackend.flush();
       });
@@ -79,7 +84,7 @@ describe('Controller', function(){
         expect($scope.scheduled_guid).toEqual('456');
       });
 
-      it('requests information about the scheduled match', function() {
+      it('requests information about the scheduled match', function(){
         expect($scope.getMatchInfo).toHaveBeenCalledWith('456');
       });
     });
@@ -89,7 +94,8 @@ describe('Controller', function(){
     var response;
     beforeEach(function(){
       spyOn($scope, 'getMatchInfo').and.callThrough();
-      response = {foo: 'bar', timeRemaining: 40, scheduled: 0};
+      spyOn(window, 'Notification');
+      response = {teams: [{names: 'Greg'}, {names: 'B0$H'}], timeRemaining: 40, scheduled: 0};
       httpBackend.expectGET('/matches/456').respond(response);
       $scope.getMatchInfo('456');
       httpBackend.flush();
@@ -97,6 +103,20 @@ describe('Controller', function(){
 
     it('alerts the user that a game was found', function(){
       expect($scope.status).toEqual(2)
+    });
+
+    it('creates a browser notification the first time', function(){
+      expect(window.Notification).toHaveBeenCalledWith("Match Found!", {
+        body: "Greg vs. B0$H",
+        icon: "/public/images/icon.png"
+      });
+    });
+
+    it('doesn\'t create a browser notification if already in state 2', function(){
+      httpBackend.expectGET('/matches/456').respond(response);
+      $scope.getMatchInfo('456');
+      httpBackend.flush();
+      expect(window.Notification.calls.count()).toEqual(1);
     });
 
     it('saves the match information', function(){

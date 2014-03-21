@@ -4,6 +4,7 @@ angular.module('tableTennisTime',[])
   $scope.status = 0;
 
   $scope.submit = function(game){
+    Notification.requestPermission(function() {});
     $http.post('/match_requests', game).success(function(response){
       $scope.request_guid = response['guid'];
       $scope.status = 1;
@@ -27,6 +28,12 @@ angular.module('tableTennisTime',[])
 
   $scope.getMatchInfo = function(scheduledGuid){
     $http.get('/matches/' + scheduledGuid).success(function(response){
+      if($scope.status < 2){
+        new Notification('Match Found!', {
+          body: response.teams[0].names + " vs. " + response.teams[1].names,
+          icon: "/public/images/icon.png"
+        });
+      }
       $scope.status = 2;
       $scope.match = response;
       if(response.timeRemaining > 0 && response.scheduled === 0){
@@ -34,7 +41,7 @@ angular.module('tableTennisTime',[])
       } else if(response.timeRemaining < 1 && response.scheduled === 0) {
         failMatch();
       }
-    }).error(function(e){
+    }).error(function(){
       if($scope.match && !$scope.match.scheduled){
         failMatch();
       }

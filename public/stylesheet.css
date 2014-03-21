@@ -19,12 +19,6 @@ body {
     margin-left: 30px;
 }
 
-/*====================================
-*
-* Web interface styles
-*
-====================================*/
-
 .web-interface {
     width: 400px;
     border: 3px double #000000;
