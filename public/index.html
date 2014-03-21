@@ -20,7 +20,7 @@
 	</a>
 
 	<div ng-controller="Controller" class="red web-interface">
-		<form class="simple-form">
+		<form class="simple-form" ng-show="status <= 0">
 			<label class="row">Name(s):
 				<input class="text-input" type='text' ng-model="game.names"/>
 			</label>
@@ -35,24 +35,26 @@
 			</label>
 			<button class="button row" ng-click="submit(game)">Request Match</button>
 		</form>
-		<div class="row" ng-show="status">
-			Status: {{status}}
+		<div class="row" ng-switch="status">
+			<div class="img-wrap" ng-switch-when="1"> Searching...
+                <img class="the-internet" src='/public/images/the_internet.gif'/>
+            </div>
+			<span ng-switch-when="2"> Match Found! </span>
+			<span ng-switch-when="-1"> Match Failed </span>
 		</div>
 		<div class="row" ng-show="match">
 			Match Found: {{match.teams[0].names + " vs. " + match.teams[1].names}}
 		</div>
-		<button ng-show="match" class="button"
+		<button ng-show="match" class="button" ng-class="{accepted: accepted === 1}" ng-disabled="acceptedOrRejected"
 			ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 1)">Accept Match</button>
-		<button ng-show="match" class="button"
+		<button ng-show="match" class="button" ng-class="{rejected: accepted === -1}" ng-disabled="acceptedOrRejected"
 			ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 0)">Reject Match</button>
 		<div class="row" ng-show="match.timeRemaining && !match.scheduled">
 			Time Left: {{match.timeRemaining}}
 		</div>
-		<div class="row" ng-show="match.scheduled===1">
-			Match Accepted!
-		</div>
-		<div class="row" ng-show="match.scheduled===-1">
-			Match Rejected!
+		<div ng-switch="match.scheduled" class="row">
+            <span ng-switch-when="1" class="accepted"> Match Accepted! </span>
+            <span ng-switch-when="-1" class="rejected"> Match Rejected! </span>
 		</div>
 	</div>
 </body>

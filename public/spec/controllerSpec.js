@@ -22,6 +22,7 @@ describe('Controller', function(){
 
   it('sets defaults for the game', function(){
     expect($scope.game).toEqual({numPlayers: 1, matchType: 'singles'});
+    expect($scope.status).toEqual(0);
   });
 
   describe('submitting a game request', function(){
@@ -37,7 +38,7 @@ describe('Controller', function(){
     });
 
     it('alerts the user that it is searching for a match', function(){
-      expect($scope.status).toEqual('Searching...');
+      expect($scope.status).toEqual(1);
     });
 
     it('updates the status of the game request', function(){
@@ -95,7 +96,7 @@ describe('Controller', function(){
     });
 
     it('alerts the user that a game was found', function(){
-      expect($scope.status).toEqual('Match Found!')
+      expect($scope.status).toEqual(2)
     });
 
     it('saves the match information', function(){
@@ -120,7 +121,7 @@ describe('Controller', function(){
       timeout.flush(1000);
       expect($scope.getMatchInfo.calls.count()).toEqual(2);
       expect($scope.match).not.toBeNull();
-      expect($scope.status).not.toEqual('Match Failed!');
+      expect($scope.status).not.toEqual(-1);
     });
 
     it('stops updating if the match times out', function(){
@@ -133,7 +134,7 @@ describe('Controller', function(){
       timeout.flush(1000);
       expect($scope.getMatchInfo.calls.count()).toEqual(2);
       expect($scope.match).toBeNull();
-      expect($scope.status).toEqual('Match Failed!');
+      expect($scope.status).toEqual(-1);
     });
 
     describe('when there is an error', function(){
@@ -143,7 +144,7 @@ describe('Controller', function(){
         httpBackend.flush();
 
         expect($scope.match).toBeNull();
-        expect($scope.status).toEqual('Match Failed!');
+        expect($scope.status).toEqual(-1);
       });
 
       it('does not remove the match if there is a scheduled match', function(){
@@ -153,7 +154,7 @@ describe('Controller', function(){
         httpBackend.flush();
 
         expect($scope.match).not.toBeNull();
-        expect($scope.status).not.toEqual('Match Failed!');
+        expect($scope.status).not.toEqual(-1);
       });
     });
   });
@@ -164,6 +165,7 @@ describe('Controller', function(){
         .respond(200, {});
       $scope.acceptOrRejectMatch('456', '123', 1);
       httpBackend.flush();
+      expect($scope.acceptedOrRejected).toBeTruthy();
     });
   });
 
@@ -173,7 +175,7 @@ describe('Controller', function(){
         .respond(200, {});
       $scope.acceptOrRejectMatch('456', '123', 0);
       httpBackend.flush();
+      expect($scope.acceptedOrRejected).toBeTruthy();
     });
   });
-
 });
