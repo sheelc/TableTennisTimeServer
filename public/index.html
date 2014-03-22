@@ -1,21 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html ng-app='tableTennisTime'>
 <head>
+    <link href='http://fonts.googleapis.com/css?family=Lobster+Two:400,400italic' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="/public/stylesheet.css">
+	<script src="/public/angular.min.js"></script>
+	<script src="/public/controller.js"></script>
 	<title>TableTennisTime</title>
 </head>
 
 <body>
-	<div class="main-content">
-		<img class="paddle-icon" src="/public/images/icon.png">
-		<h1 class="main-title">TableTennisTime</h1>
-	</div>
-	
-	<a class="download" href="/public/TableTennisTime.app.zip">
-		<div class="download-text">
-			Download now
+	<div class="header">
+		<span class="title">TableTennisTime</span>
+        <img class="paddle-icon" src="/public/images/icon.png">
+        <a class="download button" href="/public/TableTennisTime.app.zip">
+            Download OSX App
+        </a>
+    </div>
+
+	<div ng-controller="Controller" class="red web-interface">
+        <div class="web-title">Find a Match!</div>
+		<form class="simple-form" ng-show="status <= 0">
+			<label class="row">Name(s):
+				<input class="text-input" type='text' ng-model="game.names"/>
+			</label>
+			<label class="row"><span>Num. of Players:</span>
+				<label class="input-inline"><input type='radio' value=1 ng-model="game.numPlayers"/><span>1 Player</span></label>
+				<label class="input-inline"><input type='radio' value=2 ng-model="game.numPlayers"/><span>2 Players</span></label>
+				<label class="input-inline"><input type='radio' value=3 ng-model="game.numPlayers"/><span>3 Players</span></label>
+			</label>
+			<label class="row">Match Type:
+				<label class="input-inline"><input type='radio' value='singles' ng-model="game.matchType"/><span>Singles</span></label>
+				<label class="input-inline"><input type='radio' value='doubles' ng-model="game.matchType"/><span>Doubles</span></label>
+			</label>
+			<button class="button row" ng-click="submit(game)">Request Match</button>
+		</form>
+		<div class="row" ng-switch="status">
+            <div ng-switch-when="1">
+                <div class="the-internet" >
+                    <div class="search-wrapper">
+                        <span class="searching"> Searching... </span>
+                    </div>
+                </div>
+            </div>
+			<span class='rejected' ng-switch-when="-1"> Match Failed </span>
 		</div>
-	</a>
+		<div class="row" ng-show="match">
+			Match Found: <em>{{match.teams[0].names + " vs. " + match.teams[1].names}}</em>
+		</div>
+        <div ng-show="!match.scheduled">
+            <button ng-show="match" class="button" ng-class="{accepted: accepted === 1}" ng-disabled="acceptedOrRejected"
+                    ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 1)">Accept Match</button>
+            <button ng-show="match" class="button" ng-class="{rejected: accepted === -1}" ng-disabled="acceptedOrRejected"
+                    ng-click="acceptOrRejectMatch(scheduled_guid, request_guid, 0)">Reject Match</button>
+            <div class="row" ng-show="match.timeRemaining && !match.scheduled">
+                Time Left: {{match.timeRemaining}}
+            </div>
+        </div>
+		<div ng-switch="match.scheduled" class="row">
+            <span ng-switch-when="1">
+                <span class="accepted"> Match Accepted! Go Play! </span>
+                <br/>
+                Assigned Table: <em>{{match.assignedTable}}</em>
+            </span>
+            <span ng-switch-when="-1" class="rejected">
+                Match Rejected!
+                <a class="button" href="/"> Try Again </a>
+            </span>
+		</div>
+	</div>
 </body>
 
 </html>

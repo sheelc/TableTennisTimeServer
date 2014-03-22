@@ -1,40 +1,103 @@
-* {
-	font-family: "britannic bold";
+body {
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light","Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
-.main-content {
-	position: relative;
-	margin: 0 auto;
-	width: 750px;
+.header > * {
+    vertical-align: middle;
 }
-.main-title {
-	font-size: 100px;
-	text-align: center;
-	margin-top: 240px;
+
+.title {
+    font-family: 'Lobster Two', cursive;
+    font-size: 30px;
 }
 
 .paddle-icon {
-	height: 200px;
-	width: 200px;
-	position: absolute;
-	top: -140px;
-	left: -60px;
+	height: 35px;
 }
 
 .download {
-	height: 80px;
-	width: 300px;
-	background-color: #b01030;
-	border-radius: 10px;
-	margin-top: 50px;
-	display: block;
-	text-decoration: none;
-	margin: 0 auto;
+    margin-left: 30px;
 }
 
-.download-text {
-	color: #f7ca7d;
-	font-size: 36px;
-	text-align: center;
-	line-height: 80px;
+.web-interface {
+    width: 400px;
+    border: 3px double #000000;
+    padding: 20px;
+    margin: 300px auto 0;
+}
+
+.web-title {
+    font-size: 24px;
+}
+
+.button {
+	background-color: white;
+	border: 1px solid black;
+	padding: 10px 15px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color .3s ease-in-out;
+    text-decoration: none;
+    color: black;
+}
+
+.button:hover {
+	background-color: AliceBlue;
+}
+
+.text-input {
+	border: 1px solid black;
+	padding: 10px 15px;
+	font-size: 14px;
+    width: 300px;
+}
+
+.the-internet {
+    background: url('/public/images/the_internet.gif');
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.search-wrapper {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.searching {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    -webkit-animation:spin 4s linear infinite;
+}
+
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(-360deg); } }
+
+.row {
+	display: block;
+	margin: 10px 0;
+}
+
+.row span {
+	vertical-align: middle;
+}
+
+.input-inline {
+	margin: 0 5px;
+}
+
+.input-inline input {
+	vertical-align: middle;
+}
+
+.accepted {
+    color: green;
+}
+
+.rejected {
+    color: darkred;
 }

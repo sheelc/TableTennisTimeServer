@@ -18,3 +18,5 @@ node_modules
 
 manifest.yml
 config.json
+
+dump.rdb

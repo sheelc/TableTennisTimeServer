@@ -3,9 +3,13 @@
 This is the server component to [TableTennisTime](https://github.com/sheelc/TableTennisTime). Please refer there for more information.
 
 ## Installation
-- Install redis
-- turn redis on
+- `brew install redis`
+- `redis-server`
 - `npm install`
+
+## To Run Angular Tests
+- `npm install -g karma-cli`
+- `karma start karma.config`
 
 ## Start server with: ##
 - `node server.js`
